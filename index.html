@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Save URL Query to Firestore</title>
+  <script type="module">
+    // -------------------------------
+    // 1. Firebase Config
+    // -------------------------------
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyDavd3AS7RrmxGvwje4A6sZyG8CVO118Y4",
+  authDomain: "ting-67508.firebaseapp.com",
+  projectId: "ting-67508",
+  storageBucket: "ting-67508.firebasestorage.app",
+  messagingSenderId: "533542097236",
+  appId: "1:533542097236:web:8e3b5b76c54c4d323bb8c1"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // -------------------------------
+    // 2. Get URL Query Params
+    // -------------------------------
+    function getQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      const data = {};
+
+      for (const [key, value] of params.entries()) {
+        data[key] = value;
+      }
+      return data;
+    }
+
+    // -------------------------------
+    // 3. Save to Firestore
+    // -------------------------------
+    async function saveToFirestore() {
+      const queryData = getQueryParams();
+
+      if (Object.keys(queryData).length === 0) {
+        console.log("No URL parameters found.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "urlData"), {
+          ...queryData,
+          timestamp: new Date()
+        });
+        console.log("Saved successfully!", queryData);
+      } catch (e) {
+        console.error("Error saving:", e);
+      }
+    }
+
+    // Run on page load
+    window.onload = saveToFirestore;
+  </script>
+</head>
+<body>
+  <h3>URL Data Storing...</h3>
+</body>
+</html>
